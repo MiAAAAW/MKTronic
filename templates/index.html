@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Predicción de Fallas en Máquinas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+  <nav class="navbar">
+    <img src="{{ url_for('static', filename='images/logomeka.png') }}" alt="Logo de Mekaforestronic" class="navbar__logo">
+    <h1 class="navbar__title">MEKAFORESTRONIC</h1>
+    <ul class="navbar__links">
+      <li class="navbar__item">
+        <a href="#home" class="navbar__link">Inicio</a>
+      </li>
+      <li class="navbar__item">
+        <a href="#predict" class="navbar__link">Predecir</a>
+      </li>
+      <li class="navbar__item">
+        <a href="#about" class="navbar__link">Acerca del Modelo</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <img src="{{ url_for('static', filename='images/hero-image.jpg') }}" alt="Imagen Principal">
+    <div class="hero-content">
+      <h1>MEKAFORESTRONIC</h1>
+      <h2>INTELIGENCIA ARTIFICIAL PARA LA PREDICCION DE FALLAS EN MAQUINARIAS </h2>
+      <p>La predicción de fallas y la identificación del tipo de avería en las máquinas se ha simplificado 
+        considerablemente, permitiendo obtener resultados precisos con solo ingresar los parámetros clave.</p>
+      <a href="#predict" class="cta-button">Comenzar</a>
+    </div>
+  </div>
+
+  <div class="form-section" id="predict">
+    <h2>Predecir Fallas y su Tipo en Máquinas</h2>
+    <form action="{{ url_for('predict')}}" method="POST" class="prediction-form">
+      <div class="form-group">
+        <label for="temperature">Temperatura del Aire:</label>
+        <input type="number" step="0.1" id="temperature" name="temperature" placeholder="Rango típico (295-305K)" required>
+      </div>
+      <div class="form-group">
+        <label for="process_temperature">Temperatura del Proceso:</label>
+        <input type="number" step="0.1" id="process_temperature" name="process_temperature" placeholder="Rango típico (305-314K)" required>
+      </div>
+      <div class="form-group">
+        <label for="torque">Torque:</label>
+        <input type="number" step="0.1" id="torque" name="torque" placeholder="Rango típico (3-77Nm)" required>
+      </div>
+      <div class="form-group">
+        <label for="tool_wear">Desgaste de la Herramienta:</label>
+        <input type="number" step="0.1" id="tool_wear" name="tool_wear" placeholder="Rango típico (0-253min)" required>
+      </div>
+      <button type="submit" class="submit-button">Predecir</button>
+    </form>
+
+    <div class="result-section">
+
+      <div class="failure-heading">
+        <h3>Prediccion para la Máquina &raquo;</h3>
+        <!-- Círculo verde con una descripción accesible -->
+        <span class="circle hollow-green{% if failure_prediction == 0 %} filled-green{% endif %}" aria-label="Indicador de fallo verde"></span>
+        
+        <!-- Círculo rojo con una descripción accesible -->
+        <span class="circle hollow-red{% if failure_prediction == 1 %} filled-red{% endif %}" aria-label="Indicador de fallo rojo"></span>
+      </div>
+
+      <p class="failure-message">
+        {% if failure_prediction == 0 %}
+          Todo bien: La máquina no parece tener fallas :3.
+        {% elif failure_prediction == 1 %}
+          Falla detectada: Por favor revisa la máquina.
+        {% endif %}
+      </p>
+
+      <div class="failure-cards">
+        <div class="card{% if failure_prediction == 1 and type_prediction == 1 %} active{% endif %}">
+          <h3>Falla por Desgaste de la Herramienta (TWF)</h3>
+          <img src="{{ url_for('static', filename='images/tool-wear.png') }}" alt="TWF">
+        </div>
+        <div class="card{% if failure_prediction == 1 and type_prediction == 2 %} active{% endif %}">
+          <h3>Falla por Disipación de Calor (HDF)</h3>
+          <img src="{{ url_for('static', filename='images/heat.png') }}" alt="HDF">
+        </div>
+        <div class="card{% if failure_prediction == 1 and type_prediction == 3 %} active{% endif %}">
+          <h3>Falla de Energía (PWF)</h3><br />
+          <img src="{{ url_for('static', filename='images/power.png') }}" alt="PWF">
+        </div>
+        <div class="card{% if failure_prediction == 1 and type_prediction == 4 %} active{% endif %}">
+          <h3>Falla por Sobrecarga (OSF)</h3>
+          <img src="{{ url_for('static', filename='images/overstrain.png') }}" alt="OSF">
+        </div>
+        <div class=" card{% if failure_prediction == 1 and type_prediction == 5 %} active{% endif %}">
+          <h3>Falla Aleatoria (RNF)</h3><br />
+          <img src="{{ url_for('static', filename='images/random.png') }}" alt="RNF">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-section" id="about">
+    <h2>Acerca del Modelo</h2>
+    <p>
+      Nuestro modelo utiliza inteligencia artificial avanzada para anticipar fallas en equipos y clasificar los distintos tipos de averías dentro de la industria 
+      manufacturera. A través de redes neuronales, es capaz de analizar múltiples variables operativas como temperatura, presión, vibración y otras condiciones 
+      críticas. Este enfoque permite detectar patrones de comportamiento que preceden a las fallas, proporcionando una visión predictiva y proactiva. El modelo no
+       solo optimiza el rendimiento de las máquinas, sino que también mejora la planificación del mantenimiento, minimiza tiempos de inactividad inesperados, 
+       reduce costos operativos y extiende la vida útil de los equipos. Como resultado, las empresas pueden operar con mayor eficiencia, seguridad y rentabilidad.
+    </p>
+
+    <div class="about-card">
+      <h3>Predicción de Fallas en Máquinas</h3>
+      <p>
+        El modelo de redes neuronales para la predicción de fallas en máquinas evalúa múltiples parámetros como temperatura, presión, humedad y vibración para 
+        identificar con precisión posibles averías. Aprovechando el análisis de datos históricos, el modelo es capaz de captar patrones y relaciones complejas
+         que facilitan la implementación de un mantenimiento preventivo. Esto reduce significativamente el tiempo de inactividad no planificado y optimiza el r
+         endimiento general de los equipos, asegurando una mayor eficiencia operativa.
+      </p>
+    </div>
+
+    <div class="about-card">
+      <h3>Predicción del Tipo de Falla en Máquinas</h3>
+      <p>
+        El modelo de redes neuronales para la clasificación de fallas identifica y clasifica el tipo de avería utilizando datos históricos y un conjunto definido
+         de categorías de fallas. A través de técnicas avanzadas de aprendizaje profundo, el modelo es capaz de descubrir patrones complejos y relaciones
+          intrincadas que pueden no ser evidentes con métodos tradicionales. Esta capacidad de aprendizaje permite una detección más precisa de las causas
+           subyacentes, lo que facilita la resolución de problemas dirigida y la toma de decisiones más informada. 
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy;  MEKAFORESTRONIC</p>
+    <p> Contacto del Desarrollador: +51 931033778</p>
+  </footer>
+</body>
+
+</html>
